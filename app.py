@@ -446,7 +446,7 @@ def analyze_and_display_gene(display_fish, display_human, fish_symbol, ensembl_i
                     tooltip=['Target Sequence', 'Tier', 'PAM', 'Pos', 'Score', 'Tm (°C)']
                 ).interactive().properties(height=300, title=f"gRNA Distribution Map for {display_fish.upper()}")
                 
-               st.altair_chart(chart, width="stretch")
+                st.altair_chart(chart, width="stretch"
                 
                 st.download_button("📥 Download Target Data (CSV)", data=df.to_csv(index=False).encode('utf-8'), file_name=f"{display_fish}_targets.csv", mime="text/csv", key=f"dl_{display_fish}")
                 st.dataframe(df.head(15))
