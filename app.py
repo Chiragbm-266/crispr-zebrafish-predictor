@@ -436,7 +436,7 @@ def analyze_and_display_gene(display_fish, display_human, fish_symbol, ensembl_i
         dna_seq = fetch_ensembl_sequence(fish_symbol, ensembl_id)
         if dna_seq:
             grna_list = find_grnas(dna_seq, enzyme)
-        if grna_list:
+            if grna_list:
                 df = pd.DataFrame(grna_list).sort_values(by="Score", ascending=False).reset_index(drop=True)
                 
                 chart = alt.Chart(df).mark_circle(size=60).encode(
@@ -446,12 +446,15 @@ def analyze_and_display_gene(display_fish, display_human, fish_symbol, ensembl_i
                     tooltip=['Target Sequence', 'Tier', 'PAM', 'Pos', 'Score', 'Tm (°C)']
                 ).interactive().properties(height=300, title=f"gRNA Distribution Map for {display_fish.upper()}")
                 
-                st.altair_chart(chart, width="stretch")
+                # Using the original parameter to ensure zero syntax errors
+                st.altair_chart(chart, use_container_width=True)
                 
                 st.download_button("📥 Download Target Data (CSV)", data=df.to_csv(index=False).encode('utf-8'), file_name=f"{display_fish}_targets.csv", mime="text/csv", key=f"dl_{display_fish}")
-                st.dataframe(df.head(15))         
-        else: st.warning(f"No valid PAM sites found for {enzyme}.")
-        else: st.error(f"⚠️ Gene DNA sequence could not be retrieved from Ensembl for symbol '{display_fish.upper()}'. It may require manual mapping.")
+                st.dataframe(df.head(15))
+            else:
+                st.warning(f"No valid PAM sites found for {enzyme}.")
+        else:
+            st.error(f"⚠️ Gene DNA sequence could not be retrieved from Ensembl for symbol '{display_fish.upper()}'. It may require manual mapping.")
 
 # ==========================================
 # 7. MAIN APPLICATION WORKFLOW (THE 3 TABS)
